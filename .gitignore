@@ -1,5 +1,6 @@
 # pass
-pass.txt
+*.txt
+*.env
 
 # Logs
 logs
