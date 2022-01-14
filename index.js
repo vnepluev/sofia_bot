@@ -1,13 +1,3 @@
-/*
-from: {
-    id: 21783751,
-    is_bot: false,
-    first_name: 'Valeriy',
-    username: 'mrGreen2020',
-    language_code: 'ru'
-  }
-*/
-
 const botApi = require('node-telegram-bot-api')  // подключаем API бота telegram
 require('dotenv').config()                       // dotenv для хранения данных в .env
 
@@ -26,10 +16,38 @@ const sequalize = new Sequelize(
         dialect: process.env.BOT_DIALECT
     })
 
-// определеяем модель таблицы
-const UserModel = sequalize.define('users', {
-    ID: { type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true },
-    FROM_ID: { type: DataTypes.TEXT, unique: true }
+// определяем модель таблицы `chatbot`
+// https://sequelize.org/v7/manual/model-basics.html#model-definition
+// https://sequelize.org/v7/manual/model-basics.html#data-types
+const UserModel = sequalize.define('chatbot', {
+    chatbot_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      primaryKey: true,
+      unique: true,
+      autoIncrement: true
+    },
+		chatbot_user_id: {
+			type: DataTypes.BIGINT.UNSIGNED,
+      unique: true
+		},
+    chatbot_tg_user_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      unique: true
+    },
+		chatbot_tg_user_name: {
+			type: DataTypes.TEXT
+		},
+		chatbot_tg_first_name: {
+			type: DataTypes.TEXT
+		},
+		createdAt: {
+			type: DataTypes.DATE,
+			defaultValue: DataTypes.NOW
+		},
+		updatedAt: {
+			type: DataTypes.DATE,
+			defaultValue: DataTypes.NOW
+		}
 })
 
 
@@ -75,16 +93,49 @@ const start = async () => {
         { command: '/map', description: 'Как добраться' }
     ])
 
+
+/*
+from: {
+    id: 21783751,
+    is_bot: false,
+    first_name: 'Valeriy',
+    username: 'mrGreen2020',
+    language_code: 'ru'
+  }
+*/
+
     // сообщения для бота
     bot.on('message', async msg => {
-        const text = msg.text
-        const chatID = msg.chat.id
+        const text = msg.text								// сообщение от пользователя
+        const chatID = msg.chat.id							// id чата
+				const userId = msg.from.id					// id пользователя
+				const chatFirstName = msg.from.first_name   // имя пользователя
+				const chatUserName = msg.from.username      // @nickname
 
         try {
-            console.log(msg);
+            console.log(msg)
             
+			const findUser = await UserModel.findOne({ where: { chatbot_tg_user_id: userId } })
             if (text === '/start') {
-                await UserModel.create({FROM_ID: chatID})
+                // а есть ли пользователь в БД?
+                if (findUser === null) {
+                    await UserModel.create({
+                        chatbot_tg_user_id: userId,
+                        chatbot_tg_user_name: chatFirstName,
+                        chatbot_tg_first_name: chatUserName,
+                        createdAt: new Date(Date.now()),
+                    })
+                } else {
+                    // обновляем дату (разница в 4 часа)
+                    findUser.changed('updatedAt', true)
+                    await findUser.save()
+                    // const res1 = await findUser.update(
+                    //     { updatedAt: new Date(Date.now()) },
+                    //     { where: {chatbot_tg_user_id: userId} }
+                    // )
+                    // console.log(res1)
+                }
+
                 await bot.sendSticker(chatID, 'https://tlgrm.ru/_/stickers/1d4/336/1d433610-907e-31e1-bcd1-bb87fb42375f/2.webp')
                 return await bot.sendMessage(chatID, `Приветствую ${msg.from.first_name}! Информация об аренде парусных яхт и варианты туристических прогулок.`, menuOptions) // кнопки начального меню
             }
@@ -99,7 +150,7 @@ const start = async () => {
             // сообщение по умолчанию
             return await bot.sendMessage(chatID, `Я нахожусь в стадии разработки и еще мало что умею.`)
         } catch (error) {
-            return bot.sendMessage(chatID, `Упс, в боте какая-то ошибочка`)
+            return bot.sendMessage(chatID, `Упс, в боте какая-то ошибочка ${error}`)
         }
         
     })

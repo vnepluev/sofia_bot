@@ -22,4 +22,5 @@ npm i node-telegram-bot-api
 npm i nodemon
 npm install --save sequelize
 npm install --save mariadb
+npm install dotenv
 ```
