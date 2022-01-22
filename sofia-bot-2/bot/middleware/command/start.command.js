@@ -2,6 +2,7 @@ const { Markup } = require('telegraf')
 const bot = require('../../connection/token.connection.js')
 const db = require('../../connection/db.connection.js')
 const ChatbotModel = require('../../model/chatbot.model.js')
+const randomStiker = require('../../plugin/randomSticker.js')
 
 module.exports = bot.start(async (ctx) => {
    try {
@@ -19,8 +20,10 @@ module.exports = bot.start(async (ctx) => {
          where: { chatbot_tg_user_id: userID },
       })
 
+      // ====================================
+      // добавляем нового пользователя в БД
+      // ====================================
       if (!foundUser) {
-         // добавляем нового пользователя в БД
          await ChatbotModel.create({
             chatbot_tg_user_id: userID,
             chatbot_tg_user_name: nickName,
@@ -39,14 +42,32 @@ module.exports = bot.start(async (ctx) => {
          await foundUser.save()
       }
 
+      // ====================================
       // выводим начальное приветствие
-      await bot.sendSticker(
-         userID,
-         'https://tlgrm.ru/_/stickers/1d4/336/1d433610-907e-31e1-bcd1-bb87fb42375f/2.webp'
-      )
-      return await bot.sendMessage(
-         userID,
-         `Приветствую ${firstName}! Информация об аренде парусных яхт и варианты туристических прогулок.`,
+      // ====================================
+
+      // Кнопки основного меню
+      const menuOptions = {
+         reply_markup: JSON.stringify({
+            inline_keyboard: [
+               [
+                  { text: 'Прогулки на яхте', callback_data: '/sell' },
+                  { text: 'Фотосессии', callback_data: '/photo' },
+               ],
+               [{ text: 'Туристические маршруты', callback_data: '/tour' }],
+               [
+                  { text: 'О нас', callback_data: '/about' },
+                  { text: 'Как добраться', callback_data: '/map' },
+               ],
+               [{ text: 'Личный кабинет', url: 'https://nepluev.com/' }],
+            ],
+         }),
+      }
+
+      await ctx.replyWithSticker(randomStiker())
+
+      return await ctx.replyWithHTML(
+         `<b>Приветствую ${firstName}!</b> Информация об аренде парусных яхт и варианты туристических прогулок.`,
          menuOptions
       )
    } catch (e) {
