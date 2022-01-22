@@ -4,6 +4,15 @@ require('dotenv').config()                       // dotenv для хранени
 const token = process.env.BOT_TOKEN
 const bot = new botApi(token, { polling: true })
 
+/**
+ * TODO: chatbot_user_id === null -> показать кнопку `регистрация в лк` 
+ * TODO: иначе показываем кнопку `личный кабинет`
+ * TODO: если есть заказ:
+ * TODO: меняем текст приветствия `Приветствую <user>! Ждем Вас 20.06.07, к 14:30 на борту яхты! Приезжайте минут за 10-15 до начала прогулки.`
+ * 
+ * 
+ */
+
 
 // подключаем БД
 const { Sequelize, DataTypes } = require('sequelize')
@@ -59,7 +68,8 @@ const menuOptions = {
              { text: 'Фотосессии', callback_data: '/photo' }],
             [{ text: 'Туристические маршруты', callback_data: '/tour' }],
             [{ text: 'О нас', callback_data: '/about' },
-             { text: 'Как добраться', callback_data: '/map' }]
+             { text: 'Как добраться', callback_data: '/map' }],
+            [{ text: "Личный кабинет", "url": "https://nepluev.com/"}]
         ]
     })
 }
@@ -92,7 +102,6 @@ const start = async () => {
         { command: '/tour', description: 'Туристические маршруты' },
         { command: '/map', description: 'Как добраться' }
     ])
-
 
 /*
 from: {
@@ -133,7 +142,6 @@ from: {
                     //     { updatedAt: new Date(Date.now()) },
                     //     { where: {chatbot_tg_user_id: userId} }
                     // )
-                    // console.log(res1)
                 }
 
                 await bot.sendSticker(chatID, 'https://tlgrm.ru/_/stickers/1d4/336/1d433610-907e-31e1-bcd1-bb87fb42375f/2.webp')

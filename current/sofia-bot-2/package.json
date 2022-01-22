@@ -1,0 +1,18 @@
+{
+  "name": "sofia-bot-2",
+  "version": "2.0.0",
+  "description": "Telegram bot rent yacht 2",
+  "main": "sofia-bot.js",
+  "scripts": {
+    "dev": "nodemon sofia-bot.js",
+    "start": "node sofia-bot.js"
+  },
+  "keywords": [],
+  "author": "Valeriy V Nepluev",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^11.0.0",
+    "nodemon": "^2.0.7",
+    "telegraf": "^4.6.0"
+  }
+}
