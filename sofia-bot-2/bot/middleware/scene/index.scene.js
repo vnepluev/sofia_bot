@@ -12,8 +12,20 @@ bot.use(stage.middleware())
 
 // Вход в сцену registerScene
 bot.action('/register', async (ctx) => {
-   // await ctx.answerCbQuery()
-   await ctx.reply('Представьтесь пожалуйста:')
+   await ctx.answerCbQuery()
+   await ctx.replyWithHTML(
+      '<b>Желаете пройти регистрацию?</b>\n\nРегистрация проста и займет не больше минуты.',
+      {
+         reply_markup: JSON.stringify({
+            inline_keyboard: [
+               [
+                  { text: '✅ Да, желаю', callback_data: '/yes' },
+                  { text: '❌ Нет', callback_data: '/no' },
+               ],
+            ],
+         }),
+      }
+   )
    await ctx.scene.enter('registerWizard')
 })
 

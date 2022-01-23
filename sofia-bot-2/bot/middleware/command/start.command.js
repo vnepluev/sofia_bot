@@ -52,7 +52,7 @@ module.exports = bot.start(async (ctx) => {
       await ctx.replyWithSticker(randomStiker())
 
       return await ctx.replyWithHTML(
-         `<b>Приветствую ${firstName}!</b> Информация об аренде парусных яхт и варианты туристических прогулок.`,
+         `<b>Приветствую ${firstName}!</b>\n\nИнформация об аренде парусных яхт и варианты туристических прогулок.`,
          startMenuOptions
       )
    } catch (e) {
