@@ -1,6 +1,5 @@
 // SCENES
-// require("./bot/middleware/scene/index.scene");
-
+require('./bot/middleware/scene/index.scene.js')
 // ON
 
 // COMMANDS

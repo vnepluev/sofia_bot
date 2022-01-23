@@ -15,12 +15,12 @@ const startMenuOptions = {
             { text: '📸 Фотосессии', callback_data: '/photo' },
          ],
          [
-            { text: '❓ Вопросы / ответы', callback_data: '/faq' },
+            { text: '❓ Вопрос / ответ', callback_data: '/faq' },
             { text: '⚓ Как добраться', callback_data: '/map' },
          ],
          [
             { text: 'Перейти на сайт', url: 'https://nepluev.com/' },
-            { text: '💥 Регистрация', callback_data: '/map' },
+            { text: '💥 Регистрация', callback_data: '/register' },
          ],
       ],
    }),

@@ -6,7 +6,7 @@ const randomStiker = require('../../plugin/randomSticker.js')
 
 module.exports = bot.start(async (ctx) => {
    try {
-      // Подключаемся к БД
+      // подключаемся к БД
       // https://sequelize.org/v7/manual/getting-started.html
       await db.authenticate()
       await db.sync()
@@ -32,7 +32,7 @@ module.exports = bot.start(async (ctx) => {
          })
       } else {
          // если пользователь есть в БД, обновляем время доступа (- 4 часа)
-         // обновляем его основные данные
+         // и его основные данные
          foundUser.set({
             chatbot_tg_user_name: nickName,
             chatbot_tg_first_name: firstName,
