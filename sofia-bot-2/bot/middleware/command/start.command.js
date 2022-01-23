@@ -47,28 +47,13 @@ module.exports = bot.start(async (ctx) => {
       // ====================================
 
       // Кнопки основного меню
-      const menuOptions = {
-         reply_markup: JSON.stringify({
-            inline_keyboard: [
-               [
-                  { text: 'Прогулки на яхте', callback_data: '/sell' },
-                  { text: 'Фотосессии', callback_data: '/photo' },
-               ],
-               [{ text: 'Туристические маршруты', callback_data: '/tour' }],
-               [
-                  { text: 'О нас', callback_data: '/about' },
-                  { text: 'Как добраться', callback_data: '/map' },
-               ],
-               [{ text: 'Личный кабинет', url: 'https://nepluev.com/' }],
-            ],
-         }),
-      }
+      const { startMenuOptions } = require('./keyboard.menu.js')
 
       await ctx.replyWithSticker(randomStiker())
 
       return await ctx.replyWithHTML(
          `<b>Приветствую ${firstName}!</b> Информация об аренде парусных яхт и варианты туристических прогулок.`,
-         menuOptions
+         startMenuOptions
       )
    } catch (e) {
       console.log('Подключение к БД сломалось:', e)
