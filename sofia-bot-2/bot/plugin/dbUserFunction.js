@@ -2,8 +2,10 @@ const db = require('../connection/db.connection.js')
 const ChatbotModel = require('../model/chatbot.model.js')
 const UsersModel = require('../model/users.model.js')
 
-// возвращает объект: user_id, если зарегистрирован
+// ====================================
+// возвращает объект: { user_id, user_name }, если зарегистрирован
 // если нет - undefined
+// ====================================
 async function getUserRegInfo(userID) {
    try {
       await db.authenticate()

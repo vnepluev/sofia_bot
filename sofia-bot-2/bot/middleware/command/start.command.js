@@ -53,13 +53,12 @@ module.exports = bot.start(async (ctx) => {
          startMenuRegOptions,
       } = require('./keyboard.menu.js')
 
-      const { user_id, user_name } = getUserRegInfo(userID)
+      const { user_name } = await getUserRegInfo(userID)
       let menuOptions = startMenuOptions
       // если зарегистрирован меняем меню и приветствие
-      console.log(getUserRegInfo(userID))
       if (user_name) {
          menuOptions = startMenuRegOptions
-         firstName = userRegInfo.user_name
+         firstName = user_name
       }
 
       await ctx.replyWithSticker(randomStiker())
