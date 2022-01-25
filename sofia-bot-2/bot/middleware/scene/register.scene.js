@@ -1,4 +1,10 @@
 // https://highload.today/regulyarnye-vyrazheniya-v-javascript-primery-ispolzovaniya-i-servisy-dlya-proverki/
+// userData.firstName
+// userData.nickName //@
+// userData.howFind
+// userData.email
+// userData.phone
+// userData.phone2
 require('dotenv').config()
 const { Markup, Scenes, Composer } = require('telegraf')
 const db = require('../../connection/db.connection.js')
@@ -83,7 +89,7 @@ phone2Step.on('text', async (ctx) => {
 
 // Шаг 5 (проверка 2 номера телефона)
 const howFindStep = new Composer()
-const txt = 'Как вы о нас узнали (н-р: реклама в инстаграм)?'
+const txt = 'Откуда о нас узнали (н-р: реклама в инстаграм)?'
 
 howFindStep.action('/skip', async (ctx) => {
    await ctx.answerCbQuery()
@@ -142,7 +148,7 @@ isCorrectStep.on('text', async (ctx) => {
             userData.nickName
                ? '<b>Ник в телеграм:</b>\n' + 't.me/' + userData.nickName + '\n'
                : ''
-         }\n<b>Как о нас узнали:</b>\n${userData.howFind}`,
+         }\n<b>Откуда о нас узнали:</b>\n${userData.howFind}`,
          {
             disable_web_page_preview: true,
             reply_markup: JSON.stringify({
@@ -185,12 +191,6 @@ saveBDStep.action('/yes', async (ctx) => {
 
       const userData = ctx.wizard.state.formData
       const userID = userData.userID
-      // userData.firstName
-      // userData.nickName //@
-      // userData.howFind
-      // userData.email
-      // userData.phone
-      // userData.phone2
       const foundUser = await ChatbotModel.findOne({
          where: { chatbot_tg_user_id: userID },
       })
@@ -218,7 +218,6 @@ saveBDStep.action('/yes', async (ctx) => {
       }
 
       // Добавляем userid в БД chatbot
-      console.log('userID:', userID, 'newUser.user_id =', newUser.user_id)
       foundUser.set({
          chatbot_user_id: newUser.user_id,
       })
@@ -230,7 +229,7 @@ saveBDStep.action('/yes', async (ctx) => {
          'https://tlgrm.ru/_/stickers/8c8/aa0/8c8aa0c1-8da1-3a11-ae45-fc092dd0c263/16.webp'
       )
       await ctx.replyWithHTML(
-         `<b>Поздравляю ${ctx.wizard.state.formData.firstName}! Вы успешно зарегистрировались!</b>\n\nТеперь Вам доступны расширенные опции (расписание, напоминания, заказы...). Не забудьте включить звуковые уведомления в боте!\n\nВернуться в главное меню /start`
+         `<b>Поздравляю ${ctx.wizard.state.formData.firstName}! Вы успешно зарегистрировались!</b>\n\nТеперь вам доступны расширенные опции (расписание, напоминания, заказы...). Не забудьте включить звуковые уведомления в боте!\n\nВернуться в главное меню /start`
       )
    } catch (error) {
       ctx.reply(

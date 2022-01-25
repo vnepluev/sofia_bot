@@ -12,8 +12,8 @@ module.exports = bot.start(async (ctx) => {
       await db.sync()
 
       const userID = ctx.chat.id
-      const firstName = ctx.chat.first_name ? ctx.chat.first_name : '' // фамилия
-      const lastName = ctx.chat.last_name ? ctx.chat.last_name : '' // имя
+      let firstName = ctx.chat.first_name ? ctx.chat.first_name : '' // имя
+      const lastName = ctx.chat.last_name ? ctx.chat.last_name : '' // фамилия
       const nickName = ctx.chat.username ? ctx.chat.username : '' //@
 
       const foundUser = await ChatbotModel.findOne({
@@ -47,13 +47,26 @@ module.exports = bot.start(async (ctx) => {
       // ====================================
 
       // Кнопки основного меню
-      const { startMenuOptions } = require('./keyboard.menu.js')
+      const { getUserRegInfo } = require('../../plugin/dbUserFunction.js')
+      const {
+         startMenuOptions,
+         startMenuRegOptions,
+      } = require('./keyboard.menu.js')
+
+      const { user_id, user_name } = getUserRegInfo(userID)
+      let menuOptions = startMenuOptions
+      // если зарегистрирован меняем меню и приветствие
+      console.log(getUserRegInfo(userID))
+      if (user_name) {
+         menuOptions = startMenuRegOptions
+         firstName = userRegInfo.user_name
+      }
 
       await ctx.replyWithSticker(randomStiker())
 
       return await ctx.replyWithHTML(
          `<b>Приветствую ${firstName}!</b>\n\nИнформация об аренде парусных яхт и варианты туристических прогулок.`,
-         startMenuOptions
+         menuOptions
       )
    } catch (e) {
       console.log('Подключение к БД сломалось:', e)
