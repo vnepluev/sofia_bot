@@ -8,6 +8,10 @@ const sequalize = new Sequelize(
    {
       host: process.env.BOT_HOST,
       dialect: process.env.BOT_DIALECT,
+      dialectOptions: {
+         useUTC: false, // for reading from database
+      },
+      timezone: '+03:00',
    }
 )
 

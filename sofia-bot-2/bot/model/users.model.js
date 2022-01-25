@@ -5,29 +5,50 @@ const db = require('../connection/db.connection.js')
 // https://sequelize.org/v7/manual/model-basics.html#model-definition
 // https://sequelize.org/v7/manual/model-basics.html#data-types
 module.exports = db.define(
-   'chatbot',
+   'users',
    {
-      chatbot_id: {
+      user_id: {
          type: DataTypes.BIGINT.UNSIGNED,
          primaryKey: true,
          unique: true,
          autoIncrement: true,
       },
-      chatbot_user_id: {
+      user_name: {
+         type: DataTypes.TEXT,
+         require: true,
+      },
+      user_password: {
+         type: DataTypes.TEXT,
+      },
+      user_email: {
+         type: DataTypes.TEXT,
+      },
+      user_confirm_email: {
+         type: DataTypes.TEXT,
+         defaultValue: 'строка активации',
+      },
+      user_phone1: {
+         type: DataTypes.TEXT,
+         require: true,
+      },
+      user_phone2: {
+         type: DataTypes.TEXT,
+      },
+      user_telegram_id: {
          type: DataTypes.BIGINT.UNSIGNED,
          unique: true,
       },
-      chatbot_tg_user_id: {
-         type: DataTypes.BIGINT.UNSIGNED,
-         unique: true,
-      },
-      chatbot_tg_user_name: {
+      user_telegram_nickname: {
          type: DataTypes.TEXT,
       },
-      chatbot_tg_first_name: {
+      user_marketing: {
          type: DataTypes.TEXT,
       },
-      chatbot_tg_last_name: {
+      user_group: {
+         type: DataTypes.INTEGER,
+         defaultValue: 0,
+      },
+      user_private_about: {
          type: DataTypes.TEXT,
       },
       createdAt: {

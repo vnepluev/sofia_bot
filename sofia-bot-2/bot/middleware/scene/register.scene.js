@@ -1,5 +1,9 @@
-const { Markup, Scenes, Composer } = require('telegraf')
 // https://highload.today/regulyarnye-vyrazheniya-v-javascript-primery-ispolzovaniya-i-servisy-dlya-proverki/
+require('dotenv').config()
+const { Markup, Scenes, Composer } = require('telegraf')
+const db = require('../../connection/db.connection.js')
+const ChatbotModel = require('../../model/chatbot.model.js')
+const UsersModel = require('../../model/users.model.js')
 
 // Шаг 1 (пользователь согласен пройти регистрацию?)
 const nameStep = new Composer()
@@ -154,7 +158,7 @@ isCorrectStep.on('text', async (ctx) => {
       return ctx.wizard.next()
    } else {
       await ctx.replyWithHTML(
-         '🦞 <b>Пожалуйста, напишите как вы о нас узнали</b>'
+         '🦞 <b>Пожалуйста, напишите как вы о нас узнали (только буквы и цифры)</b>'
       )
    }
 
@@ -170,15 +174,77 @@ saveBDStep.action('/no', async (ctx) => {
    )
    return ctx.scene.leave()
 })
-// сохраняем в БД users
+
+// ====================================
+// добавляем нового пользователя в БД Users обновляя userID в БД chatbot
+// ====================================
 saveBDStep.action('/yes', async (ctx) => {
-   await ctx.answerCbQuery()
-   await ctx.replyWithSticker(
-      'https://tlgrm.ru/_/stickers/8c8/aa0/8c8aa0c1-8da1-3a11-ae45-fc092dd0c263/16.webp'
-   )
-   await ctx.replyWithHTML(
-      `<b>Поздравляю ${ctx.wizard.state.formData.firstName}! Вы успешно зарегистрировались!</b>\n\nТеперь Вам доступны расширенные опции (расписание, напоминания, заказы...). Не забудьте включить звуковые уведомления в боте!\n\nВернуться в главное меню /start`
-   )
+   try {
+      await db.authenticate()
+      await db.sync()
+
+      const userData = ctx.wizard.state.formData
+      const userID = userData.userID
+      // userData.firstName
+      // userData.nickName //@
+      // userData.howFind
+      // userData.email
+      // userData.phone
+      // userData.phone2
+      const foundUser = await ChatbotModel.findOne({
+         where: { chatbot_tg_user_id: userID },
+      })
+      if (!foundUser) {
+         throw new Error('User not found. Такое вряд ли возможно?')
+      }
+
+      // Создаем нового пользователя в БД Users
+      await UsersModel.create({
+         user_name: userData.firstName,
+         user_email: userData.email,
+         user_phone1: userData.phone,
+         user_phone2: userData.phone2,
+         user_telegram_id: userID,
+         user_telegram_nickname: userData.nickName,
+         user_marketing: userData.howFind,
+      })
+
+      // получаем userid только что созданного пользователя
+      const newUser = await UsersModel.findOne({
+         where: { user_telegram_id: userID },
+      })
+      if (!newUser) {
+         throw new Error('New User after created not found.')
+      }
+
+      // Добавляем userid в БД chatbot
+      console.log('userID:', userID, 'newUser.user_id =', newUser.user_id)
+      foundUser.set({
+         chatbot_user_id: newUser.user_id,
+      })
+      await foundUser.save()
+
+      // успешное сообщение об окончании регистрации
+      await ctx.answerCbQuery()
+      await ctx.replyWithSticker(
+         'https://tlgrm.ru/_/stickers/8c8/aa0/8c8aa0c1-8da1-3a11-ae45-fc092dd0c263/16.webp'
+      )
+      await ctx.replyWithHTML(
+         `<b>Поздравляю ${ctx.wizard.state.formData.firstName}! Вы успешно зарегистрировались!</b>\n\nТеперь Вам доступны расширенные опции (расписание, напоминания, заказы...). Не забудьте включить звуковые уведомления в боте!\n\nВернуться в главное меню /start`
+      )
+   } catch (error) {
+      ctx.reply(
+         `Возникла ошибка при регистрации! Попробуйте чуть позже еще раз. Для возврата нажмите /start`
+      )
+      ctx.sendMessage(
+         process.env.ADMIN_TG_ID,
+         `
+         Возникла ошибка в момент регистрации у пользователя @${userData.nickName}.\n
+         TelegramID = ${userID}.\n
+         Телефон: ${userData.phone}
+      `
+      )
+   }
    return ctx.scene.leave()
 })
 
