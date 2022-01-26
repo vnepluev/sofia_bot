@@ -10,6 +10,7 @@ const { Markup, Scenes, Composer } = require('telegraf')
 const db = require('../../connection/db.connection.js')
 const ChatbotModel = require('../../model/chatbot.model.js')
 const UsersModel = require('../../model/users.model.js')
+const { returnMenuOptions } = require('../command/keyboard.menu.js') // кнопка на гл меню
 
 // Шаг 1 (пользователь согласен пройти регистрацию?)
 const nameStep = new Composer()
@@ -176,7 +177,8 @@ const saveBDStep = new Composer()
 saveBDStep.action('/no', async (ctx) => {
    await ctx.answerCbQuery()
    await ctx.reply(
-      'Для повторной регистрации вернитесь в основное меню нажав /start'
+      'Для повторной регистрации вернитесь в основное меню',
+      returnMenuOptions
    )
    return ctx.scene.leave()
 })
@@ -229,11 +231,13 @@ saveBDStep.action('/yes', async (ctx) => {
          'https://tlgrm.ru/_/stickers/8c8/aa0/8c8aa0c1-8da1-3a11-ae45-fc092dd0c263/16.webp'
       )
       await ctx.replyWithHTML(
-         `<b>Поздравляю ${ctx.wizard.state.formData.firstName}! Вы успешно зарегистрировались!</b>\n\nТеперь вам доступны расширенные опции (расписание, напоминания, заказы...). Не забудьте включить звуковые уведомления в боте!\n\nВернуться в главное меню /start`
+         `<b>Поздравляю ${ctx.wizard.state.formData.firstName}! Вы успешно зарегистрировались!</b>\n\nТеперь вам доступны расширенные опции (расписание, напоминания, заказы...). Не забудьте включить звуковые уведомления в боте!`,
+         returnMenuOptions
       )
    } catch (error) {
       ctx.reply(
-         `Возникла ошибка при регистрации! Попробуйте чуть позже еще раз. Для возврата нажмите /start`
+         `Возникла ошибка при регистрации! Попробуйте чуть позже еще раз. Для возврата нажмите`,
+         returnMenuOptions
       )
       ctx.sendMessage(
          process.env.ADMIN_TG_ID,

@@ -38,4 +38,13 @@ const startMenuRegOptions = {
    }),
 }
 
-module.exports = { startMenuOptions, startMenuRegOptions }
+// страница на главное меню
+const returnMenuOptions = {
+   reply_markup: JSON.stringify({
+      inline_keyboard: [
+         [{ text: '🏖 В главное меню', callback_data: '/start' }],
+      ],
+   }),
+}
+
+module.exports = { startMenuOptions, startMenuRegOptions, returnMenuOptions }

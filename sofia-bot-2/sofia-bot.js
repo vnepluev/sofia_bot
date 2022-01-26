@@ -9,7 +9,9 @@ require('./bot/middleware/command/start.command.js')
 // require("./bot/middleware/hears/two.hears");
 
 // ACTION
+require('./bot/middleware/action/start.action.js')
 require('./bot/middleware/action/map.action.js')
+require('./bot/middleware/action/faq.action.js')
 
 // CONNECTION
 require('./bot/connection/local.connection.js')
