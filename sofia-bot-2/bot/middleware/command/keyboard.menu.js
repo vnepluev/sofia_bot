@@ -5,7 +5,7 @@
  */
 const baseMenu = [
    [
-      { text: '⛵ Прогулки на яхте', callback_data: '/sell' },
+      { text: '⛵ Прогулки на яхте', callback_data: '/yacht_menu' },
       { text: '🎁 Сертификаты', callback_data: '/sert' },
    ],
    [
@@ -18,8 +18,27 @@ const baseMenu = [
    ],
 ]
 
-const site = [{ text: 'Перейти на сайт', url: 'https://nepluev.com/' }]
+/**
+ * Меню `прогулки на яхте`
+ */
+const yachtMenu = [
+   [{ text: '🌅 Рассветы на яхте', callback_data: '/yacht_sunrise' }],
+   [{ text: '⛵ Прогулки под парусом', callback_data: '/yacht_rent' }],
+   [{ text: '🏄 Аренда сап бордов / ватрушек', callback_data: '/supboards' }],
+   [{ text: '🏕 Туристические маршруты', callback_data: '/yacht_tour' }],
+   [
+      { text: '📸 Фотосессии', callback_data: '/photo' },
+      { text: '🐠 Рыбалка', callback_data: '/fish' },
+   ],
+   [{ text: '🏖 В главное меню', callback_data: '/start' }],
+]
+const yachtMenuOptions = {
+   reply_markup: JSON.stringify({
+      inline_keyboard: [...yachtMenu],
+   }),
+}
 
+const site = [{ text: 'Перейти на сайт', url: 'https://nepluev.com/' }]
 const startMenuOptions = {
    reply_markup: JSON.stringify({
       inline_keyboard: [
@@ -47,4 +66,9 @@ const returnMenuOptions = {
    }),
 }
 
-module.exports = { startMenuOptions, startMenuRegOptions, returnMenuOptions }
+module.exports = {
+   startMenuOptions,
+   startMenuRegOptions,
+   returnMenuOptions,
+   yachtMenuOptions,
+}

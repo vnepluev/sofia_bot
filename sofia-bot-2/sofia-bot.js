@@ -10,6 +10,7 @@ require('./bot/middleware/command/start.command.js')
 
 // ACTION
 require('./bot/middleware/action/start.action.js')
+require('./bot/middleware/action/yacht.action.js')
 require('./bot/middleware/action/map.action.js')
 require('./bot/middleware/action/faq.action.js')
 

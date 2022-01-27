@@ -5,6 +5,5 @@ const bot = require('../../connection/token.connection.js')
 
 module.exports = bot.start((ctx) => {
    const start = require('../startFunction.js')
-   ctx.answerCbQuery()
    return start(ctx)
 })
