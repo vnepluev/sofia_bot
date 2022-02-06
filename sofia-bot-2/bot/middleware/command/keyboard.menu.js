@@ -18,6 +18,9 @@ const baseMenu = [
    ],
 ]
 
+// пункт меню
+const mMenu = [{ text: '🏖 В главное меню', callback_data: '/start' }]
+
 /**
  * Меню `прогулки на яхте`
  */
@@ -30,7 +33,7 @@ const yachtMenu = [
       { text: '📸 Фотосессии', callback_data: '/photo' },
       { text: '🐠 Рыбалка', callback_data: '/fish' },
    ],
-   [{ text: '🏖 В главное меню', callback_data: '/start' }],
+   [...mMenu],
 ]
 const yachtMenuOptions = {
    reply_markup: JSON.stringify({
@@ -60,9 +63,7 @@ const startMenuRegOptions = {
 // страница на главное меню
 const returnMenuOptions = {
    reply_markup: JSON.stringify({
-      inline_keyboard: [
-         [{ text: '🏖 В главное меню', callback_data: '/start' }],
-      ],
+      inline_keyboard: [[...mMenu]],
    }),
 }
 

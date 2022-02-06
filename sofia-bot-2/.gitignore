@@ -1,6 +1,7 @@
 # pass
 *.txt
 *.env
+test_payment.js
 
 # Logs
 logs

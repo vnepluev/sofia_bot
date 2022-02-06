@@ -1,3 +1,5 @@
+const { botInfo } = require('./bot/connection/token.connection.js')
+
 // SCENES
 require('./bot/middleware/scene/index.scene.js')
 
